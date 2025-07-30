@@ -1,24 +1,50 @@
-import{ Link } from 'react-router-dom';
+import { useContext } from 'react';
+import{ Link, useNavigate } from 'react-router-dom';
+import { datacontext } from '../App';
+import { toast } from 'react-toastify';
 function Header() {
+	const navigate = useNavigate()
+	const{udata,setudata}= useContext(datacontext)
+	function Handlelogout() {
+		setudata(null)
+		navigate('/login')
+		sessionStorage.removeItem("uinfo");
+		toast.info("You have succesfully logged out")
+		
+	}
 return(
     <>
      <div className="agileits_header">
 		<div className="container">
 			<div className="w3l_offers">
-				<p>SALE UP TO 70% OFF. USE CODE "SALE70%" . <a href="products.html">SHOP NOW</a></p>
+				<p>Welcome {udata===null? "Guest": udata.name}</p>
 			</div>
 			<div className="agile-login">
 				<ul>
+					{
+						udata==null?
+						<>
 					<li><Link to ="/signup">" Create Account</Link></li>
 					<li><Link to ="/login"> Login</Link></li>
 					<li><a href="contact.html">Help</a></li>
-						</ul>
+					
+					</>:
+					<>
+					
+					<li><Link to ="/Changepassword">Change Password</Link></li>
+					<button className='btn btn-primary' onClick={Handlelogout}>Logout</button>
+					
+					</>	
+					}
+					<li>Help</li>
+					</ul>
 			</div>
 			<div className="product_list_header">  
 					<form action="#" method="post" className="last"> 
 						<input type="hidden" name="cmd" value="_cart"></input>
 						<input type="hidden" name="display" value="1"></input>
-						<button className="w3view-cart" type="submit" name="submit" value=""><i className="fa fa-cart-arrow-down" aria-hidden="true"></i></button>
+						{udata!==null?
+						<button className="w3view-cart" onClick={()=>navigate('/showcart')} type="submit" name="submit" value=""><i className="fa fa-cart-arrow-down" aria-hidden="true"></i></button>:null}
 					</form>  
 			</div>
 			<div className="clearfix"> </div>
@@ -62,104 +88,10 @@ return(
 							</div> 
 							<div className="collapse navbar-collapse" id="bs-megadropdown-tabs">
 								<ul className="nav navbar-nav">
-									<li className="active"><a href="index.html" className="act">Home</a></li>
-									<li className="dropdown">
-										<a href="#" className="dropdown-toggle" data-toggle="dropdown">Groceries<b className="caret"></b></a>
-										<ul className="dropdown-menu multi-column columns-3">
-											<div className="row">
-												<div className="multi-gd-img">
-													<ul className="multi-column-dropdown">
-														<h6>All Groceries</h6>
-														<li><a href="groceries.html">Dals & Pulses</a></li>
-														<li><a href="groceries.html">Almonds</a></li>
-														<li><a href="groceries.html">Cashews</a></li>
-														<li><a href="groceries.html">Dry Fruit</a></li>
-														<li><a href="groceries.html"> Mukhwas </a></li>
-														<li><a href="groceries.html">Rice & Rice Products</a></li>
-													</ul>
-												</div>	
-												
-											</div>
-										</ul>
-									</li>
-									<li className="dropdown">
-										<a href="#" className="dropdown-toggle" data-toggle="dropdown">Household<b className="caret"></b></a>
-										<ul className="dropdown-menu multi-column columns-3">
-											<div className="row">
-												<div className="multi-gd-img">
-													<ul className="multi-column-dropdown">
-														<h6>All Household</h6>
-														<li><a href="household.html">Cookware</a></li>
-														<li><a href="household.html">Dust Pans</a></li>
-														<li><a href="household.html">Scrubbers</a></li>
-														<li><a href="household.html">Dust Cloth</a></li>
-														<li><a href="household.html"> Mops </a></li>
-														<li><a href="household.html">Kitchenware</a></li>
-													</ul>
-												</div>
-												
-												
-											</div>
-										</ul>
-									</li>
-									<li className="dropdown">
-										<a href="#" className="dropdown-toggle" data-toggle="dropdown">Personal Care<b className="caret"></b></a>
-										<ul className="dropdown-menu multi-column columns-3">
-											<div className="row">
-												<div className="multi-gd-img">
-													<ul className="multi-column-dropdown">
-														<h6>Baby Care</h6>
-														<li><a href="personalcare.html">Baby Soap</a></li>
-														<li><a href="personalcare.html">Baby Care Accessories</a></li>
-														<li><a href="personalcare.html">Baby Oil & Shampoos</a></li>
-														<li><a href="personalcare.html">Baby Creams & Lotion</a></li>
-														<li><a href="personalcare.html"> Baby Powder</a></li>
-														<li><a href="personalcare.html">Diapers & Wipes</a></li>
-													</ul>
-												</div>
-												
-											</div>
-										</ul>
-									</li>
-									<li className="dropdown">
-										<a href="#" className="dropdown-toggle" data-toggle="dropdown">Packaged Foods<b className="caret"></b></a>
-										<ul className="dropdown-menu multi-column columns-3">
-											<div className="row">
-												<div className="multi-gd-img">
-													<ul className="multi-column-dropdown">
-														<h6>All Accessories</h6>
-														<li><a href="packagedfoods.html">Baby Food</a></li>
-														<li><a href="packagedfoods.html">Dessert Items</a></li>
-														<li><a href="packagedfoods.html">Biscuits</a></li>
-														<li><a href="packagedfoods.html">Breakfast Cereals</a></li>
-														<li><a href="packagedfoods.html"> Canned Food </a></li>
-														<li><a href="packagedfoods.html">Chocolates & Sweets</a></li>
-													</ul>
-												</div>
-												
-											
-											</div>
-										</ul>
-									</li>
-									<li className="dropdown">
-										<a href="#" className="dropdown-toggle" data-toggle="dropdown">Beverages<b className="caret"></b></a>
-										<ul className="dropdown-menu multi-column columns-3">
-											<div className="row">
-												<div className="multi-gd-img">
-													<ul className="multi-column-dropdown">
-														<h6>Tea & Coeffe</h6>
-														<li><a href="beverages.html">Green Tea</a></li>
-														<li><a href="beverages.html">Ground Coffee</a></li>
-														<li><a href="beverages.html">Herbal Tea</a></li>
-														<li><a href="beverages.html">Instant Coffee</a></li>
-														<li><a href="beverages.html"> Tea </a></li>
-														<li><a href="beverages.html">Tea Bags</a></li>
-													</ul>
-												</div>
-							
-											</div>
-										</ul>
-									</li>
+									<li className="active"><Link to="/" className="act">Home</Link></li>
+									
+									
+									<li><Link to ="/categories">Categories</Link></li>
 									<li><a href="gourmet.html">Gourmet</a></li>
 									<li><a href="offers.html">Offers</a></li>
 									<li><a href="contact.html">Contact</a></li>

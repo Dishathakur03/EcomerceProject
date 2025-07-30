@@ -54,7 +54,7 @@ function ManageProducts() {
             const apiresp =await axios.get("http://localhost:9000/api/getallcateg")
         
                 if(apiresp.data.success===1) {
-toast.success("ADDED!!")
+
                    Setdata(apiresp.data.cdata)
             }
             else if(apiresp.data.success===0) {
@@ -106,10 +106,14 @@ toast.success("ADDED!!")
                    <input type="number" name="Discount" placeholder="Discount(Without % syymbol)" required="" onChange={(e)=>Setdis(e.target.value)}className="form-control" />
                    <br></br>
                    <input type="type"name="stock" placeholder="Stock" className="form-control" onChange={(e)=>Setstock(e.target.value)}></input>
+                   <br></br>
                       <label> <input type="radio" name="Feat" value="yes" placeholder="Category Name" required="" onChange={(e)=>SetFeat(e.target.value)}/>yes</label> &nbsp;
                       <label> <input type="radio" name="Feat" value="no" placeholder="Category Name" required="" onChange={(e)=>SetFeat(e.target.value)} />no</label>
-                       
+                       <br></br>
+                       <br></br>
                        <textarea placeholder="Description" onChange={(e)=>Setdes(e.target.value)} name="Description" className="form-control"></textarea>
+                       <br>
+                       </br>
                        <input type="file" name="img" onChange={(e)=>Setpicfile(e.target.files[0])}></input>
                        <br></br>
                         <input type="submit" name="btn" className="btn btn-primary" value="Add Product" /><br/><br/>

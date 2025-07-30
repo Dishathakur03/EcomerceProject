@@ -25,20 +25,20 @@ const mongoose = require("mongoose")
 mongoose.connect('mongodb://127.0.0.1:27017/mydb')
 .then(()=>console.log("mongoDB connected!")).catch((e)=>console.log("unable to connect to MOngoDB" + e.message))
 
-const registerschema= mongoose.Schema({name:String, phone:String, Username:{unique:true,type:String}, Password:String }, {versionKey:false})
+const registerschema= mongoose.Schema({name:String, phone:String, Username:{unique:true,type:String}, Password:String , Usertype:String}, {versionKey:false})
 // schema defines the structure of collection/table in debugger. means the name of columns and its datatypes
 const registerModel = mongoose.model("register", registerschema, "register")
 //internal collection name,Schemaname, real collection name
 app.post("/api/register", async(req, res)=>{
     try{
-    const newRecord = registerModel({name:req.body.pname, phone:req.body.phn, Username:req.body.uname, Password:req.body.Pass})
+    const newRecord = registerModel({name:req.body.pname, phone:req.body.phn, Username:req.body.uname, Password:req.body.Pass, Usertype:"Normal"})
     //record that will be sent to the real db
 
    const result = await newRecord.save(); //Saving document to real record
    
     if(result)
       {
-        res.send({sucess:true})
+        res.send({sucess:true })
       }
       else
       {
@@ -54,12 +54,12 @@ app.post("/api/register", async(req, res)=>{
 
 app.post("/api/login",async(req, res)=>{
     try{
-    const result= await registerModel.findOne({Username:req.body.uname , Password:req.body.Pass})
+    const result= await registerModel.findOne({Username:req.body.uname , Password:req.body.Pass}).select("-Password")
     if(result===null){
-        res.send({sucess:0})
+        res.send({sucess:0 })
     }
     else{
-        res.send({success:1})
+        res.send({success:1 , cdata:result})
     }
     }
     catch(e)
@@ -246,6 +246,97 @@ app.post('/api/Saveproducts',upload.single('pic'),async(req, res)=>{
       
       
     }
+})
+app.get('/api/getprodsbycat',async (req,res)=>{
+ try{ 
+  const result= await Productmodel.find({Catid:req.query.cid})
+  if(result.length===0){
+    res.send({success:0})
+  }
+  else{
+    res.send({success:1, pdata:result})
+  }
+}
+catch(e) {
+  res.send({success:-1})
+  console.log(e.message)
+}
+})
+app.get('/api/getdetailsbyprod',async (req,res)=>{
+ try{ 
+  const result= await Productmodel.findOne({_id:req.query.prodid})
+  if(result===null){
+    res.send({success:0})
+  }
+  else{
+    res.send({success:1,Detdata:result })
+  }
+}
+catch(e) {
+  res.send({success:-1})
+  console.log("Backend errer" + e)
+}
+})
+app.put('/api/changepass',async(req, res)=>{
+     try{
+   const result = await registerModel.updateOne({Username:req.body.uname, Password:req.body.Pass},{Password:req.body.npass}); //Updating
+    if(result.modifiedCount==1)
+      {
+        res.send({success:1})
+      }
+      else
+      {
+        res.send({success:0})
+      }
+     
+    }
+    catch(e)
+    {
+        res.send({sucess:-1})
+      console.log( e.message)
+      
+      
+    }
+})
+//Cart API
+const CartSchema = mongoose.Schema({pid:String,prodname:String,rate:Number,qty:Number,totalcost:Number,picname:String,username:String},{versionKey:false});
+
+const CartModel = mongoose.model("cart",CartSchema,"cart");//internal collection name, SchemaName, real collection name
+
+app.post('/api/savecart', async(req, res)=>
+{
+  try
+  {
+    const newrecord = CartModel({pid:req.body.pid,prodname:req.body.Productname,rate:req.body.remcost,qty:req.body.qnty,totalcost:req.body.totalcost,picname:req.body.picname,username:req.body.uname})
+    const result = await newrecord.save();//saving document to real collection
+    if(result)
+    {
+      res.send({success:1})
+    }
+    else
+    {
+      res.send({success:0})
+    }
+  }
+  catch(e)
+  {
+    console.log(e.message)
+    res.send({success:-1})
+    
+  }
+})
+app.get('/api/getcart', async(req,res)=>{
+try{  const result = await CartModel.find({username:req.query.uname})
+  if(result.length==0){
+    res.send({success:0})
+  }
+else{
+  res.send({success:1 , ctdata:result})
+}}
+catch(e) {
+  res.send({success:-1})
+  console.log(e.message)
+}
 })
 
 app.listen(port,()=> {
